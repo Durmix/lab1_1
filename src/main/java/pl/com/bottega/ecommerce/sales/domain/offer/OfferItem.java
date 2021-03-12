@@ -34,10 +34,13 @@ public class OfferItem {
 
     public OfferItem(Money totalCost, int quantity, Product product, Discount discount) {
 
+        Money money = null;
         this.quantity = quantity;
         this.product = product;
-        this.discount = discount;
-        Money money = totalCost.subtract(discount.getValue());
+        if(discount != null) {
+            this.discount = discount;
+            money = totalCost.subtract(discount.getValue());
+        }
         this.totalCost = Objects.requireNonNullElse(money, totalCost);
     }
 
@@ -77,23 +80,18 @@ public class OfferItem {
             return false;
         }
         if (totalCost == null) {
-            if (other.totalCost != null) {
-                return false;
-            }
-        } else if (!totalCost.equals(other.totalCost)) {
-            return false;
-        }
-        return true;
+            return other.totalCost == null;
+        } else return totalCost.equals(other.totalCost);
     }
 
     /**
      *
-     * @param item
+     * @param other
      * @param delta
      *            acceptable percentage difference
      * @return
      */
-    public boolean sameAs(OfferItem other, double delta) {
+    boolean sameAs(OfferItem other, double delta) {
         if(!this.product.equals(other.product)) {
             return false;
         }

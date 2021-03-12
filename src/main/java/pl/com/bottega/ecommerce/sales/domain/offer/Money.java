@@ -13,7 +13,7 @@ public class Money {
 
     BigDecimal amount;
 
-    public Money subtract(Money value) {
+    Money subtract(Money value) {
         Money money = null;
         if(currency.equals(value.currency)) {
             money = new Money(currency, this.amount.subtract(value.getAmount()));
@@ -21,7 +21,7 @@ public class Money {
         return money;
     }
 
-    public void multiply(BigDecimal value) {
+    void multiply(BigDecimal value) {
         this.amount = this.amount.multiply(value);
     }
 
@@ -45,13 +45,9 @@ public class Money {
             return false;
         }
         if (amount == null) {
-            if (other.amount != null) {
-                return false;
-            }
-        } else if (!amount.equals(other.amount)) {
-            return false;
+            return other.amount == null;
         }
-        return true;
+        return amount.equals(other.amount);
     }
 
 }
