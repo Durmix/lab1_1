@@ -1,11 +1,13 @@
 package pl.com.bottega.ecommerce.sales.domain.offer;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Getter
+@AllArgsConstructor
 public class Product {
 
     private String id;
