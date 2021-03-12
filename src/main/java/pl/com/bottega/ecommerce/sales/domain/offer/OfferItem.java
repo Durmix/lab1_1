@@ -15,36 +15,30 @@ package pl.com.bottega.ecommerce.sales.domain.offer;
 import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Getter
 public class OfferItem {
 
-    // product
     private int quantity;
 
-    private BigDecimal totalCost;
-
-    private String currency;
+    private Money totalCost;
 
     private Product product;
 
     private Discount discount;
 
-    public OfferItem(BigDecimal productPrice, int quantity, Product product) {
-        this(productPrice, quantity, product, null);
+    public OfferItem(Money totalCost, int quantity, Product product) {
+        this(totalCost, quantity, product, null);
     }
 
-    public OfferItem(BigDecimal productPrice, int quantity, Product product, Discount discount) {
+    public OfferItem(Money totalCost, int quantity, Product product, Discount discount) {
 
         this.quantity = quantity;
         this.product = product;
-
-        BigDecimal discountValue = new BigDecimal(0);
-        if (discount != null) {
-            discountValue = discountValue.subtract(discount.getValue());
-        }
-
-        this.totalCost = productPrice.multiply(new BigDecimal(quantity)).subtract(discountValue);
+        this.discount = discount;
+        Money money = totalCost.subtract(discount.getValue());
+        this.totalCost = Objects.requireNonNullElse(money, totalCost);
     }
 
     @Override
@@ -109,12 +103,12 @@ public class OfferItem {
 
         BigDecimal max;
         BigDecimal min;
-        if (totalCost.compareTo(other.totalCost) > 0) {
-            max = totalCost;
-            min = other.totalCost;
+        if (totalCost.amount.compareTo(other.totalCost.amount) > 0) {
+            max = totalCost.amount;
+            min = other.totalCost.amount;
         } else {
-            max = other.totalCost;
-            min = totalCost;
+            max = other.totalCost.amount;
+            min = totalCost.amount;
         }
 
         BigDecimal difference = max.subtract(min);
